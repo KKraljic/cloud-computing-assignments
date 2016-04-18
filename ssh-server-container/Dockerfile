@@ -5,4 +5,4 @@ RUN apt-get install openssh-client -y
 RUN sed -i 's/Port 22/Port 9000/g' /etc/ssh/sshd_config
 RUN sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 RUN service ssh start
-CMD /etc/bin/bash
+CMD bash
