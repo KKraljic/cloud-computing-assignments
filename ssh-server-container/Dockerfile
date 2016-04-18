@@ -37,4 +37,4 @@ ADD index.php /app/
 EXPOSE 80
 WORKDIR /app
 
-CMD /run.sh
+CMD ["/run.sh"]
