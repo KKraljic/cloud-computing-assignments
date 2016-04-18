@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 MAINTAINER "Florian Kaefer, Karlo Kraljic"
-RUN apt-get install openssh-server
+RUN apt-get install openssh-server -y
 RUN chkconfig ssh on
 RUN service ssh start
 RUN echo "-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 9000 -j ACCEPT" >> /etc/sysconfig/iptables
