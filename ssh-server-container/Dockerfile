@@ -18,6 +18,11 @@ RUN apt-get update && \
 RUN /usr/sbin/php5enmod mcrypt
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
     sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
+	
+RUN apt-get install openssh-server -y
+RUN apt-get install openssh-client -y
+RUN sed -i 's/Port 22/Port 9000/g' /etc/ssh/sshd_config
+RUN sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 
 ENV ALLOW_OVERRIDE **False**
 
@@ -32,11 +37,5 @@ ADD index.php /app/
 
 EXPOSE 80
 WORKDIR /app
-
-RUN apt-get install openssh-server -y
-RUN apt-get install openssh-client -y
-RUN sed -i 's/Port 22/Port 9000/g' /etc/ssh/sshd_config
-RUN sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
-RUN service ssh start
 
 CMD /run.sh
