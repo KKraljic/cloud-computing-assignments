@@ -44,4 +44,4 @@ ENV PATH /usr/local/bin/:$PATH
 RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
 
 EXPOSE 3306
-CMD ["/docker-entrypoint.sh"]
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
