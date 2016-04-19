@@ -30,6 +30,6 @@ RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 ADD sample/ /app
 ADD index.php /app/
 
-EXPOSE 22
+EXPOSE 80
 WORKDIR /app
 CMD ["/run.sh"]
