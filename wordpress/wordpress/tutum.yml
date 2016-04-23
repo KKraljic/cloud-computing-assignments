@@ -3,12 +3,12 @@ wordpress:
   links: 
    - db
   ports:
-   - "9001:80"
+   - "80:80"
   environment:
     DB_NAME: wordpress
     DB_USER: admin
-    DB_PASS: "password"
+    DB_PASS: "**ChangeMe**"
 db:
   image: tutum/mysql:5.5
   environment:
-    MYSQL_PASS: "password"
+    MYSQL_PASS: "**ChangeMe**"

@@ -19,13 +19,13 @@
 define('DB_NAME', getenv('DB_NAME'));
 
 /** MySQL database username */
-define('DB_USER', getenv('DB_USER'));
+define('DB_USER', 'admin');
 
 /** MySQL database password */
-define('DB_PASSWORD', getenv('DB_PASS'));
+define('DB_PASSWORD', 'password');
 
 /** MySQL hostname */
-define('DB_HOST', getenv('DB_HOST').":".getenv('DB_PORT'));
+define('DB_HOST', getenv('DB_PORT_3306_TCP_ADDR').":".getenv('DB_PORT_3306_TCP_PORT'));
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');

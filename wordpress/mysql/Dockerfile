@@ -1,23 +1,32 @@
-FROM oraclelinux:latest
-ENV PACKAGE_URL https://repo.mysql.com/yum/mysql-5.7-community/docker/x86_64/mysql-community-server-minimal-5.7.12-1.el7.x86_64.rpm
+FROM ubuntu:trusty
+MAINTAINER Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
 
-# Install server
-RUN rpmkeys --import http://repo.mysql.com/RPM-GPG-KEY-mysql \
-  && yum install -y $PACKAGE_URL \
-  && yum install -y libpwquality \
-  && rm -rf /var/cache/yum/*
-RUN mkdir /docker-entrypoint-initdb.d
+# Add MySQL configuration
+COPY my.cnf /etc/mysql/conf.d/my.cnf
+COPY mysqld_charset.cnf /etc/mysql/conf.d/mysqld_charset.cnf
 
-VOLUME /var/lib/mysql
+RUN apt-get update && \
+    apt-get -yq install mysql-server-5.6 pwgen && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm /etc/mysql/conf.d/mysqld_safe_syslog.cnf && \
+    if [ ! -f /usr/share/mysql/my-default.cnf ] ; then cp /etc/mysql/my.cnf /usr/share/mysql/my-default.cnf; fi && \
+    mysql_install_db > /dev/null 2>&1 && \
+    touch /var/lib/mysql/.EMPTY_DB
 
-COPY docker-entrypoint.sh /entrypoint.sh
-RUN chmod +x entrypoint.sh
+# Add MySQL scripts
+COPY import_sql.sh /import_sql.sh
+COPY run.sh /run.sh
 
-ENV MYSQL_DATABASE wordpress
-ENV MYSQL_USER admin
-ENV MYSQL_PASSWORD password
+ENV MYSQL_USER=admin \
+    MYSQL_PASS=password \
+    ON_CREATE_DB=**False** \
+    REPLICATION_MASTER=**False** \
+    REPLICATION_SLAVE=**False** \
+    REPLICATION_USER=replica \
+    REPLICATION_PASS=replica
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Add VOLUMEs to allow backup of config and databases
+VOLUME  ["/etc/mysql", "/var/lib/mysql"]
 
-EXPOSE 3306 33060
-CMD ["mysqld"]
+EXPOSE 3306
+CMD ["/run.sh"]
