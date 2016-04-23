@@ -43,7 +43,6 @@ COPY docker-entrypoint.sh /usr/local/bin/
 ENV PATH /usr/local/bin/:$PATH
 RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 3306
-CMD ["mysqld"]
+CMD ["docker-entrypoint.sh"]
