@@ -33,6 +33,6 @@ ENV DB_NAME wordpress
 ENV DB_USER admin
 ENV DB_PASS password
 
-EXPOSE 9001
+EXPOSE 9001 3306
 VOLUME ["/app/wp-content"]
 CMD ["/run.sh"]
