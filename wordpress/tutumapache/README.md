@@ -1,73 +1,99 @@
-tutum-docker-php
-================
+tutum-docker-wordpress-Stackable
+================================
 
-Base docker image to run PHP applications on Apache
+**This image will be deprecated soon. Please use the docker official image:** https://hub.docker.com/_/wordpress/
+
+[![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
+
+Out-of-the-box Wordpress docker image which can be linked to MySQL.
 
 
-Building the base image
+Usage (standalone)
+------------------
+
+This image needs an external MySQL server or linked MySQL container. To create a MySQL container:
+
+    docker run -d -e MYSQL_PASS="<your_password>" --name db -p 3306:3306 tutum/mysql:5.5
+
+To run Wordpress by linking to the database created above:
+
+    docker run -d --link db:db -e DB_PASS="<your_password>" -p 80:80 tutum/wordpress-stackable
+
+Now, you can use your web browser to access Wordpress from the the follow address:
+
+    http://localhost/
+
+The installation wizard will appear.
+
+Usage (in Tutum)
+----------------
+To run `wordpress-stackable` in tutum, simply run the following command:
+
+    tutum stack up --name wordpress
+
+You can then run `tutum service ps --stack wordpress` to find out the url of your wordpress stack.
+
+Usage (as a base image)
 -----------------------
 
-To create the base image `tutum/apache-php`, execute the following command on the tutum-docker-php folder:
+If you want to use it as a base image to create your customized version of wordpress, you can do so by creating a `Dockerfile` similar to the following:
 
-    docker build -t tutum/apache-php .
+    FROM tutum/wordpress-stackable:latest
 
+    # Add an initial data which will be automatically loaded when creating the database for the first time
+    ADD initial_db.sql /initial_db.sql
 
-Running your Apache+PHP docker image
-------------------------------------
-
-Start your image binding the external ports 80 in all interfaces to your container:
-
-    docker run -d -p 80:80 tutum/apache-php
-
-Test your deployment:
-
-    curl http://localhost/
-
-Hello world!
+    # Add custom themes, plugins and/or uploads
+    ADD themes/ /app/wp-content/themes/
+    ADD plugins/ /app/wp-content/plugins/
+    ADD uploads/ /app/wp-content/uploads/
 
 
-Enable .htaccess files
-------------------------------------
+Usage (using docker-compose)
+-----------------
 
-If you app uses .htaccess files you need to pass the ALLOW_OVERRIDE environment variable
+To launch wordpress using `docker-compose`, simply execute the following command:
 
-    docker run -d -p 80:80 -e ALLOW_OVERRIDE=true tutum/apache-php
+    docker-compose up -d
 
-
-Loading your custom PHP application
------------------------------------
-
-This image can be used as a base image for your PHP application. Create a new `Dockerfile` in your
-PHP application folder with the following contents:
-
-    FROM tutum/apache-php
-
-After that, build the new `Dockerfile`:
-
-    docker build -t username/my-php-app .
-
-And test it:
-
-    docker run -d -p 80:80 username/my-php-app
-
-Test your deployment:
-
-    curl http://localhost/
-
-That's it!
+The first time that you run this command, a new MySQL container will be created, which will then be linked to the Wordpress container automatically. You can start using Wordpress from your browser at `http://localhost/`
 
 
-Loading your custom PHP application with composer requirements
---------------------------------------------------------------
+Configuration (using docker-compose)
+-------------------------
 
-Create a Dockerfile like the following:
+Edit `docker-compose.yml` to customize the wordpress service before running `docker-compose up`:
 
-    FROM tutum/apache-php
-    RUN apt-get update && apt-get install -yq git && rm -rf /var/lib/apt/lists/*
-    RUN rm -fr /app
-    ADD . /app
-    RUN composer install
+The default `docker-compose.yml` shows as follow:
 
-- Replacing `git` with any dependencies that your composer packages might need.
-- Add your php application to `/app`
+    wordpress:
+      build: .
+      links:
+       - db
+      ports:
+       - "80:80"
+      environment:
+        DB_NAME: wordpress
+        DB_USER: admin
+        DB_PASS: "**ChangeMe**"
+        DB_HOST: "**LinkMe**"
+        DB_PORT: "**LinkMe**"
+    db:
+      image: tutum/mysql:5.5
+      environment:
+        MYSQL_PASS: "**ChangeMe**"
 
+- Change the ports `"80:80"` to map to a different port number: e.g. `"8080:80"` will run wordpress at port `8080`.
+
+- Change the value of `DB_NAME`, `DB_PASS` credentials (name, password) to connect to MySQL. Value of `DB_USER` must be `admin` at this moment.
+
+- Modify password of admin user in MySQL container by changing the value of `MYSQL_PASS`, must be the same value of `DB_PASS`.
+
+- To use a MariaDB instead of MySQL, you can make the following changes to the `docker-compose.yml` file:
+
+        db:
+          image: tutum/mariadb:latest
+          environment:
+            MARIADB_PASS: randpass
+
+    And then, change `DB_PASS` to the same value as `MARIADB_PASS`.

@@ -1,22 +1,28 @@
-FROM tutum/apache-php
-MAINTAINER "Karlo Kraljic, Florian Kaefer"
+FROM tutum/apache-php:latest
+MAINTAINER "Florian Kaefer, Karlo Kraljic"
 
-# Install packages
-RUN apt-get update && apt-get -y upgrade && apt-get -y install mysql-client
+ENV WORDPRESS_VER 4.3.1
+WORKDIR /
+RUN apt-get update && \
+    apt-get -yq install mysql-client curl && \
+    rm -rf /app && \
+    curl -0L http://wordpress.org/wordpress-${WORDPRESS_VER}.tar.gz | tar zxv && \
+    mv /wordpress /app && \
+    rm -rf /var/lib/apt/lists/*
 
-# Download latest version of WordPress into /app
-RUN rm -fr /app && git clone https://github.com/WordPress/WordPress.git /app
+RUN sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+RUN a2enmod rewrite
+ADD wp-config.php /app/wp-config.php
+ADD run.sh /run.sh
+RUN chmod +x /*.sh
 
-# Add wp-config with info for WordPress to connect to DB
-ADD https://raw.github.com/tutumcloud/tutum-docker-wordpress-nosql/master/wp-config.php /app/wp-config.php
-RUN chmod 644 /app/wp-config.php
+# Expose environment variables
+ENV DB_HOST **LinkMe**
+ENV DB_PORT **LinkMe**
+ENV DB_NAME wordpress
+ENV DB_USER admin
+ENV DB_PASS **ChangeMe**
 
-# Add script to create 'wordpress' DB
-ADD https://raw.github.com/tutumcloud/tutum-docker-wordpress-nosql/master/run.sh run.sh
-RUN chmod 755 /*.sh
-
-#Default DB is named 'wordpress', modify with environment variable to change
-ENV WORDPRESS_DB_NAME wordpress
-
-EXPOSE 80
+EXPOSE 9001
+VOLUME ["/app/wp-content"]
 CMD ["/run.sh"]
