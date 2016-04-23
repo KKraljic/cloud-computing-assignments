@@ -17,6 +17,8 @@ RUN apt-get update && \
 COPY import_sql.sh /import_sql.sh
 COPY run.sh /run.sh
 
+RUN chmod +x run.sh
+
 ENV MYSQL_USER=admin \
     MYSQL_PASS=password \
     ON_CREATE_DB=**False** \
