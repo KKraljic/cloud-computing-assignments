@@ -35,4 +35,4 @@ ENV DB_PASS password
 
 EXPOSE 9001 3306
 VOLUME ["/app/wp-content"]
-CMD ["/bash"]
+CMD ["/bin/bash"]
