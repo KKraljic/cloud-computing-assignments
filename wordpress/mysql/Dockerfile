@@ -13,6 +13,10 @@ VOLUME /var/lib/mysql
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x entrypoint.sh
 
+ENV MYSQL_DATABASE wordpress
+ENV MYSQL_USER admin
+ENV MYSQL_PASSWORD password
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 3306 33060

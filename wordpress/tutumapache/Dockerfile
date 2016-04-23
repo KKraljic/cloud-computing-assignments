@@ -17,11 +17,11 @@ ADD run.sh /run.sh
 RUN chmod +x /*.sh
 
 # Expose environment variables
-ENV DB_HOST **LinkMe**
-ENV DB_PORT **LinkMe**
+ENV DB_HOST localhost
+ENV DB_PORT 9001
 ENV DB_NAME wordpress
 ENV DB_USER admin
-ENV DB_PASS **ChangeMe**
+ENV DB_PASS password
 
 EXPOSE 9001
 VOLUME ["/app/wp-content"]
