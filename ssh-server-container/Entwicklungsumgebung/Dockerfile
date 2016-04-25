@@ -1,4 +1,4 @@
-FROM ubuntu:14
+FROM ubuntu:14.04
 MAINTAINER "Florian Kaefer, Karlo Kraljic"
 
 # Install base packages
