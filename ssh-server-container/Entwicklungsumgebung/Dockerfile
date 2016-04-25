@@ -4,10 +4,10 @@ MAINTAINER "Florian Kaefer, Karlo Kraljic"
 # Install base packages
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install \
-		openssh-server \
         curl \
         apache2 \
         libapache2-mod-php5 \
+		openssh-server \
         php5-mysql \
         php5-mcrypt \
         php5-gd \
@@ -19,7 +19,7 @@ RUN apt-get update && \
 RUN /usr/sbin/php5enmod mcrypt
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
     sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
-RUN sed -i 's/Port 22/Port 9000/g' /etc/ssh/sshd_config
+RUN sed -i 's/Port 22/Port 9002/g' /etc/ssh/sshd_config
 RUN sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 RUN sed -i '137s/.*/LogLevel trace1/g' /etc/apache2/apache2.conf
 
