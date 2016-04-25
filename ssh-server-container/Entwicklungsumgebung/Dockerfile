@@ -2,8 +2,7 @@ FROM ubuntu:latest
 MAINTAINER "Florian Kaefer, Karlo Kraljic"
 
 # Install base packages
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -yq install \
+RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install \
         curl \
         apache2 \
         libapache2-mod-php5 \
