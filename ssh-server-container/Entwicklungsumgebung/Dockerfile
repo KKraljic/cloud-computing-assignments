@@ -1,8 +1,9 @@
-FROM ubuntu:latest
+FROM ubuntu:14
 MAINTAINER "Florian Kaefer, Karlo Kraljic"
 
 # Install base packages
-RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install \
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -yq install \
         curl \
         apache2 \
         libapache2-mod-php5 \
