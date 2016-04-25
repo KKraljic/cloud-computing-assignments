@@ -1,5 +1,5 @@
 FROM tutum/apache-php:latest
-MAINTAINER Borja Burgos <borja@tutum.co>, Feng Honglin <hfeng@tutum.co>
+MAINTAINER Karlo Kraljic, Florian Kaefer
 
 ENV WORDPRESS_VER 4.3.1
 WORKDIR /
